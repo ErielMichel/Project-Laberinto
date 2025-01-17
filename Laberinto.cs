@@ -176,7 +176,8 @@ namespace Eri
             { 
                 if (laberinto[nuevaY, nuevaX] == 'K' && varitasRecolectadas < totalVaritas) 
                 { 
-                    varitasRecolectadas++; 
+                    varitasRecolectadas++;
+                    Console.WriteLine("Haz recolectado una varita...cada vez estas mas cerca de poder escapar"); 
                 }
                 playerX = nuevaX; 
                 playerY = nuevaY;
