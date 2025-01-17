@@ -1,39 +1,36 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.VisualBasic;
 
 
 namespace Eri
 {
     class Laberinto
     {
-        private static int alto = 21;
-        private static int ancho = 21;
-        private static char[,] laberinto = new char[alto, ancho];
-        private static Random random = new Random();
-        private static int playerY;
-        private static int playerX;
-        private static int varitasRecolectadas = 0;   //Cantidad de llaves que posee el jugador
-        private static int totalVaritas = 3;   //Cantidad necesaria de llaves para abrir la puerta de salida
-        private static int total = 5;
+
+        private static int alto = 21;   //Alto del laberinto.
+        private static int ancho = 21;  //Ancho del laberinto.
+        private static char[,] laberinto = new char[alto, ancho];   
+        private static Random random = new Random();    //Crea una variable random.
+        private static int playerY;    //Posicion del jugador en las filas.
+        private static int playerX;    //Posicion del jugador en las columnas.
+        private static int varitasRecolectadas = 0;   //Cantidad de llaves que posee el jugador.
+        private static int totalVaritas = 3;   //Cantidad necesaria de varitas para abrir la puerta de salida.
+        private static int total = 5;   //Cantidad total de llaves en el mapa.
         
         
 
         static void Main()
         {
-            GenerarLaberinto();
-            ColocarVaritasYPuerta();
-            EncontrarPosicionInicial();
+            GenerarLaberinto();     //Llama al metodo para generar el laberinto.
+            ColocarVaritasYPuerta();       //Llama al metodo para generar en el laberinto las llaves y la puerta. 
+            EncontrarPosicionInicial();    //Llama al metodo para encontrar la casilla desde donde sale el jugador.
 
 
             while(true)
             {
-                Console.Clear();
-                MostrarLaberinto();
-                Console.WriteLine($"Varitas recolectadas: {varitasRecolectadas} / {totalVaritas}");
-                Console.WriteLine("Para moverte utilice W (arriba), A (izquierda), S (abajo), D (derecha)");
+            
+                MostrarLaberinto();    //Llama al metodo para imprimir el laberinto actualizado, luego de limpiar la version anterior.
+                Console.WriteLine($"Varitas recolectadas: {varitasRecolectadas} / {totalVaritas}");     //Imprime la cantidad de varitas que haz coleccionado y las que necesitas.
+                Console.WriteLine("Para moverte utilice W (arriba), A (izquierda), S (abajo), D (derecha)");       //Imprime las teclas que debes utilizar para jugar.
                 
                 string movimiento = Convert.ToString(Console.ReadLine()!.ToUpper());
 
@@ -41,7 +38,7 @@ namespace Eri
                 else if(movimiento == "A") Mover(-1,0);
                 else if(movimiento == "S") Mover(0,1);
                 else if(movimiento == "D") Mover(1,0);      
-                else Console.WriteLine("Movimiento no valido");
+                else {Console.WriteLine("Movimiento no valido. \ntoca alguna tecla para continuar"); Console.ReadKey();}
             
                 if(laberinto[playerY, playerX] == 'V' && varitasRecolectadas == totalVaritas)
                 {
@@ -51,11 +48,13 @@ namespace Eri
             }
         }
 
+
         static void GenerarLaberinto()
         {
             InicializarLaberinto();
             Cavar(1,1);
         }
+
 
         private static void Mezclar(int[] array)
         {
@@ -67,16 +66,19 @@ namespace Eri
                 array[j] = temp;
             }
         }
+
+
         private static void InicializarLaberinto()
         {
             for(int y = 0; y < ancho; y++)
             {
                 for(int x = 0; x < alto; x++)
                 {
-                    laberinto[y,x] = '#';
+                    laberinto[y, x] = '#';
                 }
             }
         }
+
 
         private static void Cavar(int y, int x)
         {
@@ -91,20 +93,21 @@ namespace Eri
 
                 switch(direccion)
                 {
-                    case 0 : nx = x + 2; break;    //Derecha
-                    case 1 : ny = x + 2; break;    //Abajo
-                    case 2 : nx = x - 2; break;   //Izquierda
-                    case 3 : ny = x - 2; break;    //Arriba
+                    case 0 : nx = x + 2; break;     //Derecha
+                    case 1 : ny = y + 2; break;     //Abajo
+                    case 2 : nx = x - 2; break;     //Izquierda
+                    case 3 : ny = y - 2; break;     //Arriba
                 }
 
                 if (ny >= 0 && ny < alto && nx >= 0 && nx < ancho && laberinto[ny, nx] == '#') 
                 { 
                     laberinto[ny - (ny - y) / 2, nx - (nx - x) / 2] = ' ';
-                    laberinto[nx, ny] = ' ';
-                    Cavar(nx,ny);
+                    laberinto[ny, nx] = ' ';
+                    Cavar(ny,nx);
                 }
             }
         }
+
 
         private static void ColocarVaritasYPuerta() 
         { 
@@ -130,6 +133,7 @@ namespace Eri
             laberinto[puertaY, puertaX] = 'V';  // Colocar la puerta de salida
         }
 
+
         static void EncontrarPosicionInicial()
         {
             playerY = 1;
@@ -142,10 +146,12 @@ namespace Eri
             }
             
         }
-        
+
+
         static void MostrarLaberinto()
         { 
             Console.Clear();
+
            for(int y = 0; y < alto; y++)
             {
                 for(int x = 0; x < ancho; x++) 
@@ -153,7 +159,7 @@ namespace Eri
                     if(x == playerX && y == playerY) Console.Write("🐺");   //Mostrar el jugador
                     else if(laberinto[y, x] == 'K') Console.Write("✨");    //Mostrar las varitas
                     else if(laberinto[y, x] == 'V') Console.Write("🚪");
-                    else Console.Write(laberinto[y,x] == '#' ? "🚧" : " ");
+                    else Console.Write(laberinto[y,x] == '#' ? "📦" : "  ");
                 }
                 Console.WriteLine();
             }
@@ -164,14 +170,15 @@ namespace Eri
             int nuevaX = playerX + deltaX;
             int nuevaY = playerY + deltaY;
 
+
             //Verificar límites y muros
-            if(nuevaX >= 0 && nuevaX <= ancho && nuevaY >= 0 && nuevaY <= alto && laberinto[nuevaX, nuevaY] != 'V')
-            {
-                if(laberinto[nuevaX, nuevaY] == 'K' && varitasRecolectadas < totalVaritas)
-                {
-                    varitasRecolectadas++;
+            if (nuevaX >= 0 && nuevaX < ancho && nuevaY >= 0 && nuevaY < alto && laberinto[nuevaY, nuevaX] != '#') 
+            { 
+                if (laberinto[nuevaY, nuevaX] == 'K' && varitasRecolectadas < totalVaritas) 
+                { 
+                    varitasRecolectadas++; 
                 }
-                playerX = nuevaX;
+                playerX = nuevaX; 
                 playerY = nuevaY;
             }
 
