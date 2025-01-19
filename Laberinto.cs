@@ -15,13 +15,19 @@ namespace Eri
         private static int varitasRecolectadas = 0;   //Cantidad de llaves que posee el jugador.
         private static int totalVaritas = 3;   //Cantidad necesaria de varitas para abrir la puerta de salida.
         private static int total = 5;   //Cantidad total de llaves en el mapa.
+        private static int trampas;
+        private static int totalTrampas = 10; 
+        private static char trampa_Petrificacion;
+        private static char trampa_Veneno;
+        private static char trampa_Magia_Oscura; 
         
         
 
         static void Main()
         {
             GenerarLaberinto();     //Llama al metodo para generar el laberinto.
-            ColocarVaritasYPuerta();       //Llama al metodo para generar en el laberinto las llaves y la puerta. 
+            ColocarVaritasYPuerta();    //Llama al metodo para generar en el laberinto las llaves y la puerta. 
+            ColocarTrampas();      //Llama al metodo para generar en el laberinto las trampas.
             EncontrarPosicionInicial();    //Llama al metodo para encontrar la casilla desde donde sale el jugador.
 
 
@@ -134,6 +140,31 @@ namespace Eri
         }
 
 
+        private static void ColocarTrampas()
+        {
+            for(int j = 0; j < totalTrampas; j++)
+            {
+                int y, x;
+
+                do
+                {
+                    y = random.Next(1, alto - 1);
+                    x = random.Next(1, ancho - 1);
+                } while(laberinto[y, x] != ' ');
+
+                int tipoTrampa = random.Next(3);
+                
+                switch(tipoTrampa)
+                {
+                    case 0: laberinto[y,x] = trampa_Petrificacion; break;
+                    case 1: laberinto[y,x] = trampa_Veneno; break;
+                    case 2: laberinto[y,x] = trampa_Magia_Oscura; break; 
+                }
+                 
+            }
+        }
+
+
         static void EncontrarPosicionInicial()
         {
             playerY = 1;
@@ -178,6 +209,14 @@ namespace Eri
                 { 
                     varitasRecolectadas++;
                     Console.WriteLine("Haz recolectado una varita...cada vez estas mas cerca de poder escapar"); 
+                }
+                else if(laberinto[nuevaY, nuevaX] == trampa_Petrificacion)
+                {
+                    Console.WriteLine("Haz caido en una trampa de petrificacion...estas petrificado y no puedes moverte");
+                }
+                else if(laberinto[nuevaY, nuevaX] == trampa_Veneno)
+                {
+                    Console.WriteLine("Haz caido en una trampa de veneno...pierdes 20 de vida");
                 }
                 playerX = nuevaX; 
                 playerY = nuevaY;
