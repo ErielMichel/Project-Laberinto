@@ -14,12 +14,13 @@ namespace Eri
         private static int playerX;    //Posicion del jugador en las columnas.
         private static int varitasRecolectadas = 0;   //Cantidad de llaves que posee el jugador.
         private static int totalVaritas = 3;   //Cantidad necesaria de varitas para abrir la puerta de salida.
-        private static int total = 5;   //Cantidad total de llaves en el mapa.
+        private static int total = 7;   //Cantidad total de llaves en el mapa.
         private static int trampas;
         private static int totalTrampas = 10; 
-        private static char trampa_Petrificacion;
-        private static char trampa_Veneno;
-        private static char trampa_Magia_Oscura; 
+        private static char trampa_Petrificacion = 'Pt';
+        private static char trampa_Veneno = 'Vn';
+        private static char trampa_Magia_Oscura = 'Mg';
+        private static int vida = 100; 
         
         
 
@@ -188,8 +189,11 @@ namespace Eri
                 for(int x = 0; x < ancho; x++) 
                 {
                     if(x == playerX && y == playerY) Console.Write("🐺");   //Mostrar el jugador
-                    else if(laberinto[y, x] == 'K') Console.Write("✨");    //Mostrar las varitas
-                    else if(laberinto[y, x] == 'V') Console.Write("🚪");
+                    else if(laberinto[y,x] == 'K') Console.Write("✨");    //Mostrar las varitas
+                    else if(laberinto[y,x] == 'V') Console.Write("🚪");    //Mostar las puerta
+                    else if(laberintp[y,x] == trampa_Petrificacion) Console.WriteLine("🗿️");   //Mostrar la trampa de petrificacion
+                    else if(laberinto[y,x] == trampa_Veneno) Console.WriteLine("\x1B[31m💀\x1B[0m");  //Mostrar la trampa de veneno en rojo
+                    else if(laberinto[y,x] == trampa_Magia_Oscura) Console.WriteLine("🔮")
                     else Console.Write(laberinto[y,x] == '#' ? "📦" : "  ");
                 }
                 Console.WriteLine();
@@ -217,6 +221,19 @@ namespace Eri
                 else if(laberinto[nuevaY, nuevaX] == trampa_Veneno)
                 {
                     Console.WriteLine("Haz caido en una trampa de veneno...pierdes 20 de vida");
+                    vida -= 20;
+                    if(vida <= 0)
+                    {
+                        vida = 100; // Vuelve a la vida al máximo
+                        playerX = 1; // Devuelve al jugador a la posición inicial en el eje X
+                        playerY = 1; // Devuelve al jugador a la posición inicial en el eje Y
+                        varitasRecolectadas--; // Le quita una llave al jugador
+                        Console.WriteLine("Has muerto. Vuelves a la posición inicial con la vida al máximo y pierdes una llave.");
+                    }
+                }
+                else if(laberinto[nuevaY, nuevaX] == trampa_Magia_Oscura)
+                {
+                    Console.WriteLine("Haz caido en una trampa de magia oscura");
                 }
                 playerX = nuevaX; 
                 playerY = nuevaY;
