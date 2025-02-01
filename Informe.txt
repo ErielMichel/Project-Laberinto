@@ -1,0 +1,69 @@
+Informe del Proyecto: Juego en un Laberinto
+
+¿Cómo ejecutar el proyecto?
+Para ejecutar el juego, sigue estos pasos detallados:
+
+Requisitos previos:
+Asegúrate de tener instalado .NET Core (versión 8.0 o superior).
+
+Clonar el repositorio:
+Usa Git para clonar el repositorio donde se encuentra el proyecto.
+
+Navegar al directorio:
+Cambia al directorio del proyecto.
+
+Instalar dependencias:
+Si el proyecto requiere paquetes adicionales, asegúrate de restaurarlos.
+
+Compilar el proyecto:
+Compila el proyecto para asegurarte de que no hay errores.
+
+Ejecutar el juego:
+Finalmente, ejecuta el juego.
+
+¿Cómo jugar?
+Para interactuar con el juego, sigue estas instrucciones:
+
+Inicio y selección de personajes:
+Al iniciar el juego, se presenta una pantalla de selección de personajes. Cada jugador elige un personaje, el cual tiene habilidades especiales que influyen en el transcurso del juego.
+
+Controles básicos:
+Las teclas para mover al personaje 1 son:
+
+A: Moverse hacia la izquierda.
+W: Moverse hacia arriba.
+S: Moverse hacia abajo.
+D: Moverse hacia la derecha.
+Los controles para mover al jugador 2 son:
+I: Moverse arriba
+J: Moverse a la izquierda
+K: Moverse abajo
+L: Moverse a la derecha
+También puedes usar la tecla “Enter” para confirmar acciones, como recoger objetos o activar habilidades.
+Acciones en el juego:
+
+Moverse: Usa las teclas A, W, S, D para moverte por el laberinto.
+Recoger varitas: Si te mueves a una celda que contiene una varita, se recogerá automáticamente.
+Activar habilidades: Las habilidades pueden ser activadas una vez por turno.
+Reglas del juego:
+
+El objetivo del juego es escapar del laberinto recogiendo tres varitas.
+Para acceder a la salida, se deben recoger las tres varitas y llegar a la puerta de salida antes que tu rival.
+Los jugadores deben evitar ser atrapados por los dementores, que causan daño a su vida.
+Además, hay trampas de tres tipos diferentes distribuidas por todo el mapa que pueden afectar la vida del jugador.
+Fin del juego:
+El juego termina cuando un jugador recolecta las tres varitas y llega a la salida, o cuando un jugador pierde toda su vida.
+
+Detalles de la implementación
+
+Tecnologías utilizadas:
+El proyecto fue desarrollado en C# utilizando .NET Core, lo que permite ejecutar el juego de forma multiplataforma.
+
+Estructura del código:
+El código se organiza en clases fundamentales:
+
+Personaje: Maneja las propiedades y habilidades de cada jugador.
+Laberinto: Contiene la lógica del juego, incluyendo la estructura del laberinto y la interacción de los personajes.
+Dementor: Representa a los enemigos o trampas que afectan a los jugadores.
+Desafíos enfrentados:
+Uno de los principales desafíos fue diseñar un laberinto dinámico y equilibrar las habilidades especiales de los personajes para mantener el juego desafiante. La gestión de múltiples jugadores y la lógica para sus turnos también representó una parte crucial del desarrollo.
