@@ -143,9 +143,7 @@ namespace Eri
 
                     if(movimientosJugadorUno == 3)
                     {
-                        
-                        turnoJugadorUno = false;
-                        movimientosJugadorUno = 0;
+                        MostrarLaberinto();
 
                         Console.WriteLine("Presina cualquier tecla Espacio para cambiar al turno del Jugador 2...");
                         Thread.Sleep(3000);
@@ -154,6 +152,9 @@ namespace Eri
                         {
 
                         }
+
+                        turnoJugadorUno = false;
+                        movimientosJugadorUno = 0;
                     
                     }
 
@@ -189,9 +190,7 @@ namespace Eri
 
                     if (movimientosJugadorDos == 3)
                     {
-                        
-                        turnoJugadorUno = true;
-                        movimientosJugadorDos = 0;
+                        MostrarLaberinto();
 
                         Console.WriteLine("Presione la tecla ESPACIO para cambiar al turno del Jugador 1...");
                         Thread.Sleep(3000);
@@ -200,7 +199,10 @@ namespace Eri
                         {
 
                         }
-                    
+
+                        turnoJugadorUno = true;
+                        movimientosJugadorDos = 0;
+
                     }
                     
                     if (laberinto[player2Y, player2X] == 'V' && varitasRecolectadasJugadorDos == totalVaritas)
@@ -223,6 +225,7 @@ namespace Eri
 
         static void Introduccion()
         {
+            Console.Clear();
             
             Console.ForegroundColor = ConsoleColor.DarkGray; // Cambiar el color del texto a un tono oscuro
             EscribirLentamente("====================================================");
