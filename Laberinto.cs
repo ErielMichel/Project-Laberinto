@@ -4,13 +4,22 @@
 
 namespace Eri
 {
-    class Personaje
+    public class Personaje
     {
         public string Nombre { get; set; }
         public string Character { get; set; }
         public string Habilidad { get; set; }
         public int TurnosHabilidad { get; set; } = 0;
     
+    }
+
+    public class Dementor
+    {
+
+        public int X { get; set; }
+        public int Y { get; set; }
+        public bool Activo { get; set; }
+
     }
 
 
@@ -29,9 +38,9 @@ namespace Eri
         {
             new Personaje { Nombre = "Sirius Black", Character = "🐺", Habilidad = "Cada 5 turnos obtiene el doble de movimientos." },
             new Personaje { Nombre = "Bellatrix Lestrange", Character = "🖤", Habilidad = "Inmune a la trampa de Magia Oscura." }, 
-            new Personaje { Nombre = "Rodolphus Lestrange", Character = "🕷️", Habilidad = "Cada 10 turnos sana 10 de vida" }, 
-            new Personaje { Nombre = "Barty Crouch Jr.", Character = "🎭", Habilidad = "Puede cambiar de posicion con el otro jugador cada 15 si quiere" }, 
-            new Personaje { Nombre = "Dolores Umbridge", Character = "📜", Habilidad = "Hace que el otro jugador pierda una varita...pero solo puede utilizar esta habilidad dos veces en toda la partida" }
+            new Personaje { Nombre = "Rodolphus Lestrange", Character = "🕷️", Habilidad = "Cada 10 turnos sana 10 de vida." }, 
+            new Personaje { Nombre = "Barty Crouch Jr.", Character = "🎭", Habilidad = "Puede cambiar de posicion con el otro jugador cada 15 si quiere." }, 
+            new Personaje { Nombre = "Dolores Umbridge", Character = "📜", Habilidad = "Hace que el otro jugador pierda una varita...pero solo puede utilizar esta habilidad dos veces en toda la partida." }
         };
     
     
@@ -71,6 +80,8 @@ namespace Eri
 
         private static int movimientosplayer1 = 0;
         private static int movimientosplayer2 = 0;
+
+        private static List<Dementor> dementores = new List<Dementor>();
         
 
         static void Main()
@@ -85,13 +96,15 @@ namespace Eri
             Console.WriteLine("Elige ahora el jugador 2");
             player2Char = MostrarPersonajes(personajes);        //Elige ahora el jugador 2
 
-            GenerarLaberinto();     //Llama al metodo para generar el laberinto.
+            GenerarLaberinto();     //Llama al metodo para generar el laberinto
             
-            ColocarVaritasYPuerta();    //Llama al metodo para generar en el laberinto las llaves y la puerta. 
+            ColocarVaritasYPuerta();    //Llama al metodo para generar en el laberinto las llaves y la puerta 
             
-            ColocarTrampas();      //Llama al metodo para generar en el laberinto las trampas.
+            ColocarTrampas();      //Llama al metodo para generar en el laberinto las trampas
+
+            ColocarDementores();        //Llama al metodo para colocar los dementores en el laberinto
             
-            EncontrarPosicionInicial();    //Llama al metodo para encontrar la casilla desde donde sale el jugador.
+            EncontrarPosicionInicial();    //Llama al metodo para encontrar la casilla desde donde sale el jugador
             
             bool turnoJugadorUno = true;
             int movimientosJugadorUno = 0;
@@ -101,7 +114,8 @@ namespace Eri
             {
             
                 MostrarLaberinto();    //Llama al metodo para imprimir el laberinto actualizado, luego de limpiar la version anterior
-                
+                MoverDementores();
+
                 Console.WriteLine($"Varitas recolectadas jugador1: {varitasRecolectadasJugadorUno} / {totalVaritas}");     //Imprime la cantidad de varitas que ha coleccionado el jugador1 y las que necesita
                 Console.WriteLine($"Vida jugador1: {vidaJugadorUno}");     // Muestra la vida del jugador1 
                 
@@ -264,19 +278,22 @@ namespace Eri
         
             }
 
-            while(true)
+            while (true)
             {
-                Console.Write("Ingrese el número del personaje: ");
                 
-                if(int.TryParse(Console.ReadLine(), out int opcion) && opcion > 0 && opcion <= personajes.Count)
-                {
-                    break;
-                }
-            }
-
-            opcion = Convert.ToInt32(Console.ReadLine()) - 1;
-            return personajes[opcion];
+                Console.Write("Ingrese el número del personaje: ");
         
+                if (int.TryParse(Console.ReadLine(), out int opcion) && opcion > 0 && opcion <= personajes.Count)
+                {
+                    return personajes[opcion - 1];
+                }
+                else
+                {
+                    Console.WriteLine("Entrada no válida. Por favor, ingrese un número entero válido entre 1 y " + personajes.Count);
+                }
+            
+            }
+            
         }
 
 
@@ -415,6 +432,29 @@ namespace Eri
         
         }
 
+        private static void ColocarDementores()
+        {
+            
+            for (int i = 0; i < 5; i++)
+            {
+                
+                Dementor dementor = new Dementor();
+        
+                do
+                {
+                    
+                    dementor.X = random.Next(1, ancho - 1);
+                    dementor.Y = random.Next(1, alto - 1);
+                
+                }while (laberinto[dementor.Y, dementor.X] != ' ');
+        
+                dementor.Activo = true;
+                dementores.Add(dementor);
+            
+            }
+        
+        }
+
 
         static void EncontrarPosicionInicial()
         {
@@ -454,15 +494,33 @@ namespace Eri
             {
                 for(int x = 0; x < ancho; x++) 
                 {
-                    
+                
                     if(x == player1X && y == player1Y) Console.Write(player1Char.Character);   //Mostrar el primer jugador
                     else if (x == player2X && y == player2Y) Console.Write(player2Char.Character); //Mostrar el segundo jugador
                     else if(laberinto[y,x] == 'K') Console.Write("✨");    //Mostrar las varitas
                     else if(laberinto[y,x] == 'V') Console.Write("🚪");    //Mostar las puerta
-                    else if(laberinto[y,x] == 'P') Console.Write("🗿️");    //Mostrar la trampa de petrificacion
-                    else if(laberinto[y,x] == 'M') Console.Write("💀");    //Mostrar la trampa de veneno en rojo
-                    else if(laberinto[y,x] == 'O') Console.Write("🔮");    //Mostrar la trampa de magia oscura
-                    else Console.Write(laberinto[y,x] == '#' ? "📦" : "  ");    //Mostrar las paredes y caminos del laberinto
+                    //else if(laberinto[y,x] == 'P') Console.Write("🗿️");    //Mostrar la trampa de petrificacion
+                    //else if(laberinto[y,x] == 'M') Console.Write("💀");    //Mostrar la trampa de veneno en rojo
+                    //else if(laberinto[y,x] == 'O') Console.Write("🔮");    //Mostrar la trampa de magia oscura
+                    else
+                    {
+                        bool esDementor = false;
+                        foreach (Dementor dementor in dementores)
+                        {
+                            if (dementor.X == x && dementor.Y == y && dementor.Activo)
+                            {
+                                Console.Write("👻"); // Representación del dementor
+                                esDementor = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!esDementor)
+                        {
+                            Console.Write(laberinto[y, x] == '#' ? "📦" : "  ");    // Mostrar las paredes y caminos del laberinto
+                        }
+                    } 
+                
                 }
                 
                 Console.WriteLine();
@@ -480,7 +538,53 @@ namespace Eri
             //Verificar límites y muros
             if (nuevaX >= 0 && nuevaX < ancho && nuevaY >= 0 && nuevaY < alto && laberinto[nuevaY, nuevaX] != '#') 
             {   
-                
+                foreach(Dementor dementor in dementores)
+                {
+
+                    if(dementor.X == nuevaX && dementor.Y == nuevaY && dementor.Activo)
+                    {
+                        if (esJugadorUno)
+                        {
+                            Console.WriteLine("El jugador 1 ha sido petrificado por un dementor y pierde 20 de vida");
+                            vidaJugadorUno -= 20;
+                            Thread.Sleep(3000);
+                            
+                            if (vidaJugadorUno <= 0)
+                            {
+                                
+                                vidaJugadorUno = 100; // Vuelve a la vida al máximo
+                                player1X = 1; // Devuelve al jugador a la posición inicial en el eje X
+                                player1Y = 1; // Devuelve al jugador a la posición inicial en el eje Y
+                                
+                                if (varitasRecolectadasJugadorUno > 0) varitasRecolectadasJugadorUno--; // Le quita una varita al jugador1
+                                Console.WriteLine("Ha muerto el jugador1. Vuelves a la posición inicial con la vida al máximo y pierdes una llave.");
+                                Thread.Sleep(5000);
+                            
+                            }
+                        }
+                        
+                        else
+                        {
+                            
+                            Console.WriteLine("El jugador 2 ha sido petrificado por un dementor y pierde 20 de vida");
+                            vidaJugadorDos -= 20;
+                            Thread.Sleep(3000);
+                            
+                            if (vidaJugadorDos <= 0)
+                            {
+                                vidaJugadorDos = 100; // Vuelve a la vida al máximo
+                                player2X = 19; // Devuelve al jugador a la posición inicial en el eje X
+                                player2Y = 19; // Devuelve al jugador a la posición inicial en el eje Y
+                                
+                                if (varitasRecolectadasJugadorDos > 0) varitasRecolectadasJugadorDos--; // Le quita una varita al jugador2
+                                Console.WriteLine("Ha muerto el jugador2. Vuelves a la posición inicial con la vida al máximo y pierdes una llave.");
+                                Thread.Sleep(5000);
+                            }
+                        }
+                    }
+                    dementor.Activo = false;       //Desactiva al dementor
+                    break;
+                }
                 if(esJugadorUno && player1Char.Nombre == "Sirius Black")
                 {
                     
@@ -515,9 +619,8 @@ namespace Eri
                     }
                 
                 }
-                
-                
-                if(laberinto[nuevaY, nuevaX] == 'P')
+        
+                else if(laberinto[nuevaY, nuevaX] == 'P')
                 {
                     if(esJugadorUno)
                     {
@@ -921,7 +1024,38 @@ namespace Eri
             }
         
         }
-    
+
+        private static void MoverDementores()
+        {
+            foreach (Dementor dementor in dementores)
+            {
+                if (dementor.Activo)
+                {
+                    int movimiento = random.Next(4); // 0: arriba, 1: abajo, 2: izquierda, 3: derecha
+                    switch (movimiento)
+                    {
+                        case 0:
+                            dementor.Y -= 1;
+                            break;
+                        case 1:
+                            dementor.Y += 1;
+                            break;
+                        case 2:
+                            dementor.X -= 1;
+                            break;
+                        case 3:
+                            dementor.X += 1;
+                            break;
+                    }
+                    
+                    if (dementor.X < 1) dementor.X = 1; // Limita el movimiento a la izquierda
+                    if (dementor.X > ancho - 1) dementor.X = ancho - 1; // Limita el movimiento a la derecha
+                    if (dementor.Y < 1) dementor.Y = 1; // Limita el movimiento hacia arriba
+                    if (dementor.Y > alto - 1) dementor.Y = alto - 1; // Limita el movimiento hacia abajo
+                
+                }
+            }
+        }
     }
 
 }
